@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>КОРПОРАЦИЯ МОНОЛИТ // Официальный портал</title>
+  
+  <!-- Шрифты: Inter, Golos Text, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            monolith: {
+              bg: '#1C1E22',         // Холст (графит)
+              surface: '#26292E',    // Плита (карточки, блоки)
+              accentDark: '#17191D', // Утопленные блоки / шахты
+              text: '#D8DADF',       // Белый индустриальный
+              blue: '#2E4FB5',       // Синий (вычисления, ссылки)
+              red: '#C0392B',        // Красный (управление, CTA)
+              steel: '#5A6672',      // Сталь (швы, разделители)
+              steelLight: '#8A99A8'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Golos Text"', 'Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          borderRadius: {
+            'brutal': '4px',
+            'brutal-lg': '6px'
+          },
+          letterSpacing: {
+            'stamp': '0.18em',
+            'tight-stamp': '0.08em'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Глобальные обработчики отказоустойчивости картинок -->
+  <script>
+    window.handleCoverError = function(img) {
+      if (!img) return;
+      const saved = localStorage.getItem('monolit_cover_photo');
+      if (saved && img.src !== saved) {
+        img.src = saved;
+        return;
+      }
+      img.style.display = 'none';
+      const prompt = document.getElementById('coverUploadPrompt');
+      if (prompt) {
+        prompt.classList.remove('hidden');
+        prompt.classList.add('flex');
+      }
+    };
+
+    window.handleImageError = function(img) {
+      if (!img) return;
+      const saved = localStorage.getItem('monolit_kachigarin_photo');
+      if (saved && img.src !== saved) {
+        img.src = saved;
+        return;
+      }
+      const prompt = document.getElementById('photoUploadPrompt');
+      if (prompt) {
+        prompt.classList.remove('hidden');
+        prompt.classList.add('flex');
+      }
+    };
+
+    window.handleNamazimatImageError = function(img) {
+      if (!img) return;
+      const saved = localStorage.getItem('monolit_namazimat_photo');
+      if (saved && img.src !== saved) {
+        img.src = saved;
+        return;
+      }
+      img.style.display = 'none';
+      const prompt = document.getElementById('namazimatUploadPrompt');
+      if (prompt) {
+        prompt.classList.remove('hidden');
+        prompt.classList.add('flex');
+      }
+    };
+
+    window.handleGerbImageError = function(img) {
+      if (!img) return;
+      const saved = localStorage.getItem('monolit_gerb_photo');
+      if (saved && img.src !== saved) {
+        img.src = saved;
+        return;
+      }
+      img.style.display = 'none';
+      const fallbackSvg = document.getElementById('gerbFallbackSvg');
+      if (fallbackSvg) {
+        fallbackSvg.classList.remove('hidden');
+      }
+    };
+
+    window.handlePutinImageError = function(img) {
+      if (!img) return;
+      const saved = localStorage.getItem('monolit_putin_photo');
+      if (saved && img.src !== saved) {
+        img.src = saved;
+        return;
+      }
+      img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Vladimir_Putin_%282020-02-20%29.jpg/480px-Vladimir_Putin_%282020-02-20%29.jpg';
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #1C1E22;
+      color: #D8DADF;
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .concrete-bg {
+      background-color: #1C1E22;
+      background-image: 
+        radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        radial-gradient(rgba(0, 0, 0, 0.45) 1px, transparent 1px);
+      background-size: 24px 24px, 12px 12px;
+      background-position: 0 0, 6px 6px;
+    }
+
+    .seam-border {
+      border-color: rgba(90, 102, 114, 0.25);
+    }
+
+    .btn-brutal {
+      transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+    .btn-brutal:active:not(:disabled) {
+      transform: translateY(2px) scale(0.98);
+    }
+
+    .monolith-plate {
+      transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+      border: 1px solid rgba(90, 102, 114, 0.25);
+    }
+    .monolith-plate:hover {
+      border-color: rgba(46, 79, 181, 0.85);
+      box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    .stamp-title {
+      font-family: 'Golos Text', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 900;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #17191D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3A424B;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #5A6672;
+    }
+  </style>
+</head>
+<body class="concrete-bg min-h-screen flex flex-col selection:bg-monolith-blue selection:text-white">
+
+  <!-- ==================== ШАПКА КОРПОРАЦИИ (3685.jpg) ==================== -->
+  <header class="sticky top-0 z-40 bg-monolith-surface/95 backdrop-blur-md border-b seam-border">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Логотип: 3685.jpg + Векторный дублёр -->
+      <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-1 focus:ring-monolith-blue p-1 rounded-brutal">
+        <div class="w-9 h-9 bg-monolith-bg border border-monolith-steel flex items-center justify-center p-1 rounded-brutal group-hover:border-monolith-blue transition-colors overflow-hidden">
+          <img src="3685.jpg" 
+               alt="Логотип Корпорации Монолит" 
+               class="w-full h-full object-contain"
+               onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+          <svg class="hidden w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 82 L18 80.5 V42 L34 32 V80.5 H28 V46 L22 50 V80.5 H12 Z" fill="#8A99A8"/>
+            <path d="M34 32 L48 37 V82 H34 V32 Z" fill="#D8DADF"/>
+            <rect x="22" y="50" width="4" height="30.5" fill="#1C1E22"/>
+            <path d="M52 24 L68 18 V82 H52 V24 Z" fill="#8A99A8"/>
+            <path d="M68 18 L76 25 V80.5 H70 V40 L68 39 V82 H88 L84 80.5 V35 L68 18 Z" fill="#D8DADF"/>
+            <rect x="62" y="32" width="4" height="48.5" fill="#1C1E22"/>
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-display font-black text-sm sm:text-base tracking-stamp text-white leading-none">МОНОЛИТ</span>
+          <span class="font-mono text-[9px] text-monolith-steel tracking-widest uppercase">КОРПОРАЦИЯ // РФ</span>
+        </div>
+      </a>
+
+      <!-- Навигация -->
+      <nav class="flex items-center gap-2 sm:gap-6 font-mono text-xs">
+        <a href="#leadership" class="text-monolith-steel hover:text-white transition-colors py-2 px-1 hidden md:inline-block">Руководство</a>
+        <a href="#about" class="text-monolith-steel hover:text-white transition-colors py-2 px-1">О нас</a>
+        <a href="#products" class="text-monolith-steel hover:text-white transition-colors py-2 px-1">Продукты</a>
+        <a href="#principles" class="text-monolith-steel hover:text-white transition-colors py-2 px-1 hidden sm:inline-block">Принципы</a>
+        
+        <!-- Кнопка формуляра -->
+        <button id="modalBtn" aria-label="Технический формуляр ГОСТ" title="Открыть формуляр ГОСТ" class="w-9 h-9 flex items-center justify-center border seam-border bg-monolith-accentDark hover:border-monolith-blue text-monolith-steel hover:text-white rounded-brutal transition-colors btn-brutal">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow">
+    
+    <!-- ==================== ОБЛОЖКА КОРПОРАЦИИ (cover.jpg) ==================== -->
+    <section class="border-b seam-border bg-monolith-accentDark">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 pt-4 pb-4">
+        <input type="file" id="coverFileInput" accept="image/*" class="hidden">
+        
+        <div id="coverDropZone" 
+             class="relative w-full h-44 sm:h-64 md:h-80 bg-monolith-surface border-2 border-monolith-steel rounded-brutal overflow-hidden group cursor-pointer shadow-2xl"
+             title="Нажмите, чтобы выбрать или заменить cover.jpg">
+          
+          <img id="coverImg" 
+               src="cover.jpg" 
+               alt="Обложка Корпорации Монолит" 
+               class="w-full h-full object-cover object-center transition-all duration-300 block group-hover:scale-[1.01]"
+               onerror="handleCoverError(this)">
+
+          <div id="coverUploadPrompt" class="hidden absolute inset-0 bg-monolith-surface flex flex-col items-center justify-center p-6 text-center z-10">
+            <div class="w-14 h-14 mb-3 rounded-brutal bg-monolith-accentDark border seam-border flex items-center justify-center text-monolith-steel group-hover:text-white group-hover:border-monolith-blue transition-colors">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </div>
+            <span class="font-mono text-xs sm:text-sm font-bold text-white uppercase tracking-wider block mb-1">
+              ОБЛОЖКА КОРПОРАЦИИ // ФАЙЛ: COVER.JPG
+            </span>
+            <span class="font-mono text-[11px] text-monolith-steel max-w-md leading-relaxed block mb-4">
+              Положите файл cover.jpg в корень репозитория или нажмите сюда для предпросмотра
+            </span>
+            <span class="btn-brutal inline-block bg-monolith-blue text-white font-mono text-xs uppercase px-4 py-2 rounded-brutal">
+              Выбрать cover.jpg
+            </span>
+          </div>
+
+          <div class="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-monolith-text pointer-events-none z-20"></div>
+          <div class="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-monolith-text pointer-events-none z-20"></div>
+          <div class="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-monolith-text pointer-events-none z-20"></div>
+          <div class="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-monolith-text pointer-events-none z-20"></div>
+
+          <div class="absolute top-3 left-3 bg-monolith-accentDark/90 border seam-border px-3 py-1 font-mono text-[10px] text-monolith-text uppercase rounded-brutal z-20">
+            ШТАБ-КВАРТИРА // ОБЪЕКТ МОНОЛИТ-01
+          </div>
+          <div class="absolute bottom-3 right-3 bg-monolith-accentDark/90 border seam-border px-2.5 py-1 font-mono text-[10px] text-monolith-steel uppercase rounded-brutal z-20">
+            ФАЙЛ: COVER.JPG
+          </div>
+        </div>
+
+        <div class="mt-2 flex justify-between items-center text-[10px] font-mono text-monolith-steel px-1">
+          <span>ОБЛОЖКА: ШТАБНОЙ КОМПЛЕКС КОРПОРАЦИИ</span>
+          <button type="button" id="changeCoverBtn" class="hover:text-white underline underline-offset-2">
+            [ Обновить cover.jpg ]
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ГЕРОЙ-БЛОК ==================== -->
+    <section class="relative pt-16 pb-16 sm:pt-24 sm:pb-24 border-b seam-border overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-[0.06] select-none">
+        <svg class="w-[800px] h-[800px]" viewBox="0 0 500 500" fill="none">
+          <rect x="50" y="50" width="400" height="400" stroke="#FFFFFF" stroke-width="4" stroke-dasharray="16 16" />
+          <line x1="50" y1="50" x2="450" y2="450" stroke="#FFFFFF" stroke-width="2" />
+          <line x1="450" y1="50" x2="50" y2="450" stroke="#FFFFFF" stroke-width="2" />
+          <circle cx="250" cy="250" r="120" stroke="#FFFFFF" stroke-width="3" />
+        </svg>
+      </div>
+
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        <div class="max-w-3xl">
+          <div class="inline-block px-3 py-1 bg-monolith-accentDark border seam-border font-mono text-xs text-monolith-steel mb-6 rounded-brutal">
+            ПРЕДСТАВИТЕЛЬСТВО // РЕЕСТР: 04-2026-РФ
+          </div>
+
+          <h1 class="font-display font-black text-4xl sm:text-6xl lg:text-7xl uppercase text-white tracking-stamp leading-tight sm:leading-none mb-6">
+            КОРПОРАЦИЯ<br>
+            <span class="text-white">МОНОЛИТ</span>
+          </h1>
+
+          <div class="space-y-1 mb-10 text-monolith-steel text-lg sm:text-2xl font-mono">
+            <p>Строим то, что работает.</p>
+            <p>Точно. Надёжно. По-нашему.</p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-4">
+            <a href="#products" class="btn-brutal inline-flex items-center gap-3 bg-monolith-red hover:bg-[#a93226] text-white font-mono font-bold text-sm uppercase px-8 py-4 rounded-brutal shadow-lg tracking-wider">
+              <span>Наши продукты</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+              </svg>
+            </a>
+
+            <a href="#leadership" class="btn-brutal inline-flex items-center gap-2 bg-monolith-surface border seam-border hover:border-monolith-blue text-monolith-text font-mono text-xs uppercase px-5 py-4 rounded-brutal">
+              <span>Руководство корпорации</span>
+              <span>→</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== БЛОК: РУКОВОДСТВО КОРПОРАЦИИ ==================== -->
+    <section id="leadership" class="py-16 sm:py-24 border-b seam-border bg-monolith-surface/40">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        <div class="flex items-center gap-3 mb-10">
+          <div class="w-3 h-3 bg-monolith-blue"></div>
+          <h2 class="stamp-title text-xl sm:text-2xl text-white">РУКОВОДСТВО КОРПОРАЦИИ</h2>
+          <span class="font-mono text-xs text-monolith-steel ml-auto">// СОВЕТ КОНСТРУКТОРОВ</span>
+        </div>
+
+        <div class="space-y-10">
+          
+          <!-- РУКОВОДИТЕЛЬ 1: КАЧИГАРИН МОНОЛИТ СЕМЁНОВИЧ (3093.png) -->
+          <div class="bg-monolith-surface border seam-border rounded-brutal p-6 sm:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              <div class="lg:col-span-4 flex flex-col items-center">
+                <input type="file" id="photoFileInput" accept="image/*" class="hidden">
+
+                <div id="photoDropZone" 
+                     class="relative w-56 sm:w-64 h-72 sm:h-80 bg-monolith-accentDark border-2 border-monolith-steel rounded-brutal overflow-hidden p-1 shadow-2xl group transition-all cursor-pointer"
+                     title="Нажмите, чтобы выбрать или заменить фото 3093.png">
+                  
+                  <img id="kachigarinPhoto"
+                       src="3093.png" 
+                       alt="Качигарин Монолит Семёнович — Генеральный конструктор"
+                       class="w-full h-full object-cover object-top rounded-brutal transition-all duration-300 block hover:scale-[1.02]"
+                       onerror="handleImageError(this)">
+
+                  <div id="photoUploadPrompt" class="hidden absolute inset-0 bg-monolith-accentDark flex-col items-center justify-center p-4 text-center z-10">
+                    <div class="w-12 h-12 mb-3 rounded-brutal bg-monolith-surface border seam-border flex items-center justify-center text-monolith-steel group-hover:text-white group-hover:border-monolith-blue transition-colors">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                      </svg>
+                    </div>
+                    <span class="font-mono text-xs font-bold text-white uppercase tracking-wider block mb-1">
+                      ФОТО: 3093.PNG
+                    </span>
+                    <span class="font-mono text-[10px] text-monolith-steel leading-relaxed block mb-3">
+                      Выберите файл 3093.png или перетащите его сюда
+                    </span>
+                    <span class="btn-brutal inline-block bg-monolith-blue text-white font-mono text-[10px] uppercase px-3 py-1.5 rounded-brutal">
+                      Выбрать 3093.png
+                    </span>
+                  </div>
+
+                  <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-monolith-text pointer-events-none z-20"></div>
+                  <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-monolith-text pointer-events-none z-20"></div>
+                  <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-monolith-text pointer-events-none z-20"></div>
+                  <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-monolith-text pointer-events-none z-20"></div>
+
+                  <div class="absolute bottom-2 inset-x-2 bg-monolith-accentDark/90 border seam-border py-1 px-2 text-center z-20 rounded-brutal">
+                    <span class="font-mono text-[9px] text-monolith-text uppercase tracking-tight block">
+                      ФОТО: КАЧИГАРИН М.С. // ФАЙЛ: 3093.PNG
+                    </span>
+                  </div>
+                </div>
+
+                <div class="mt-3 flex flex-col items-center gap-1.5">
+                  <button type="button" id="changePhotoBtn" class="font-mono text-[10px] text-monolith-steel hover:text-white underline underline-offset-2">
+                    [ Загрузить / Обновить 3093.png ]
+                  </button>
+                  <div class="px-3 py-1 bg-monolith-accentDark border seam-border rounded-brutal font-mono text-[11px] text-monolith-steel text-center tracking-tight-stamp">
+                    СТАТУС: В СТРОЮ // 100% ДОПУСК
+                  </div>
+                </div>
+              </div>
+
+              <div class="lg:col-span-8 flex flex-col justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-xs">
+                    <span class="text-monolith-blue font-bold">[ ГЕНЕРАЛЬНЫЙ КОНСТРУКТОР ]</span>
+                    <span class="text-monolith-steel">·</span>
+                    <span class="text-monolith-steel">ОСНОВАТЕЛЬ И ПРЕДСЕДАТЕЛЬ ПРАВЛЕНИЯ</span>
+                  </div>
+
+                  <h3 class="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase text-white tracking-tight mb-4">
+                    Качигарин Монолит Семёнович
+                  </h3>
+
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-monolith-accentDark border seam-border rounded-brutal font-mono text-xs mb-6">
+                    <div>
+                      <span class="text-monolith-steel block text-[10px] uppercase">Специализация:</span>
+                      <span class="text-white font-medium">Отказоустойчивость ПО</span>
+                    </div>
+                    <div>
+                      <span class="text-monolith-steel block text-[10px] uppercase">Стаж в отрасли:</span>
+                      <span class="text-white font-medium">32 года</span>
+                    </div>
+                    <div>
+                      <span class="text-monolith-steel block text-[10px] uppercase">Метод:</span>
+                      <span class="text-white font-medium">Индустриальный брутализм</span>
+                    </div>
+                  </div>
+
+                  <div class="relative pl-5 border-l-2 border-monolith-blue">
+                    <span class="font-mono text-xs text-monolith-steel uppercase tracking-widest block mb-2">// ПРЯМАЯ РЕЧЬ ГЛАВЫ КОРПОРАЦИИ</span>
+                    <blockquote class="text-monolith-text text-base sm:text-lg italic leading-relaxed">
+                      «Программный код обязан быть как железобетонная свая: ему не нужны модные блестки и пустые облака. Он должен принимать на себя колоссальную нагрузку, стоять насмерть и работать даже тогда, когда во всем мире отключится внешний интернет. Мы строим инструменты на века — без соплей, без слежки и по-нашему.»
+                    </blockquote>
+                    <div class="mt-3 font-mono text-xs text-monolith-steel">
+                      — М. С. Качигарин, из доклада на коллегии технического совета
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t seam-border flex flex-wrap gap-4 font-mono text-xs text-monolith-steel">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Личный надзор за архитектурой
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-monolith-blue"></span> Отказ от чужих облачных API
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-monolith-red"></span> Полный автономный суверенитет
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- РУКОВОДИТЕЛЬ 2: ТРАХАЛ НАМАЗИМАТ МАЗУМИТОВИЧ (namazimat.png) -->
+          <div class="bg-monolith-surface border seam-border rounded-brutal p-6 sm:p-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              <div class="lg:col-span-4 flex flex-col items-center">
+                <input type="file" id="namazimatFileInput" accept="image/*" class="hidden">
+
+                <div id="namazimatDropZone" 
+                     class="relative w-56 sm:w-64 h-72 sm:h-80 bg-monolith-accentDark border-2 border-monolith-steel rounded-brutal overflow-hidden p-1 shadow-2xl group transition-all cursor-pointer"
+                     title="Нажмите, чтобы выбрать или заменить фото namazimat.png">
+                  
+                  <img id="namazimatPhoto"
+                       src="namazimat.png" 
+                       alt="Трахал Намазимат Мазумитович — Заместитель генерального конструктора"
+                       class="w-full h-full object-cover object-top rounded-brutal transition-all duration-300 block hover:scale-[1.02]"
+                       onerror="handleNamazimatImageError(this)">
+
+                  <div id="namazimatUploadPrompt" class="hidden absolute inset-0 bg-monolith-accentDark flex-col items-center justify-center p-4 text-center z-10">
+                    <div class="w-12 h-12 mb-3 rounded-brutal bg-monolith-surface border seam-border flex items-center justify-center text-monolith-steel group-hover:text-white group-hover:border-monolith-blue transition-colors">
+                      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8">
+                        <path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                      </svg>
+                    </div>
+                    <span class="font-mono text-xs font-bold text-white uppercase tracking-wider block mb-1">
+                      ФОТО: NAMAZIMAT.PNG
+                    </span>
+                    <span class="font-mono text-[10px] text-monolith-steel leading-relaxed block mb-3">
+                      Положите namazimat.png в корень репозитория или выберите файл
+                    </span>
+                    <span class="btn-brutal inline-block bg-monolith-blue text-white font-mono text-[10px] uppercase px-3 py-1.5 rounded-brutal">
+                      Выбрать namazimat.png
+                    </span>
+                  </div>
+
+                  <div class="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-monolith-text pointer-events-none z-20"></div>
+                  <div class="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-monolith-text pointer-events-none z-20"></div>
+                  <div class="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-monolith-text pointer-events-none z-20"></div>
+                  <div class="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-monolith-text pointer-events-none z-20"></div>
+
+                  <div class="absolute bottom-2 inset-x-2 bg-monolith-accentDark/90 border seam-border py-1 px-2 text-center z-20 rounded-brutal">
+                    <span class="font-mono text-[9px] text-monolith-text uppercase tracking-tight block">
+                      ФОТО: ТРАХАЛ Н.М. // ФАЙЛ: NAMAZIMAT.PNG
+                    </span>
+                  </div>
+                </div>
+
+                <div class="mt-3 flex flex-col items-center gap-1.5">
+                  <button type="button" id="changeNamazimatBtn" class="font-mono text-[10px] text-monolith-steel hover:text-white underline underline-offset-2">
+                    [ Загрузить / Обновить namazimat.png ]
+                  </button>
+                  <div class="px-3 py-1 bg-monolith-accentDark border seam-border rounded-brutal font-mono text-[11px] text-monolith-steel text-center tracking-tight-stamp">
+                    СТАТУС: В СТРОЮ // КОНТРОЛЬ ЗАЩИТЫ
+                  </div>
+                </div>
+              </div>
+
+              <div class="lg:col-span-8 flex flex-col justify-between">
+                <div>
+                  <div class="flex flex-wrap items-center gap-2 mb-2 font-mono text-xs">
+                    <span class="text-monolith-red font-bold">[ ЗАМЕСТИТЕЛЬ ГЕНЕРАЛЬНОГО КОНСТРУКТОРА ]</span>
+                    <span class="text-monolith-steel">·</span>
+                    <span class="text-monolith-steel">ДИРЕКТОР ПО АППАРАТНОМУ СУВЕРЕНИТЕТУ И БЕЗОПАСНОСТИ</span>
+                  </div>
+
+                  <h3 class="font-display font-black text-2xl sm:text-3xl lg:text-4xl uppercase text-white tracking-tight mb-4">
+                    Трахал Намазимат Мазумитович
+                  </h3>
+
+                  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-monolith-accentDark border seam-border rounded-brutal font-mono text-xs mb-6">
+                    <div>
+                      <span class="text-monolith-steel block text-[10px] uppercase">Специализация:</span>
+                      <span class="text-white font-medium">Защищённая криптография</span>
+                    </div>
+                    <div>
+                      <span class="text-monolith-steel block text-[10px] uppercase">Стаж в отрасли:</span>
+                      <span class="text-white font-medium">27 лет</span>
+                    </div>
+                    <div>
+                      <span class="text-monolith-steel block text-[10px] uppercase">Профиль:</span>
+                      <span class="text-white font-medium">Очистка стека от чужды</span>
+                    </div>
+                  </div>
+
+                  <div class="relative pl-5 border-l-2 border-monolith-red">
+                    <span class="font-mono text-xs text-monolith-steel uppercase tracking-widest block mb-2">// ПРЯМАЯ РЕЧЬ ЗАМЕСТИТЕЛЯ ГЕНЕРАЛЬНОГО КОНСТРУКТОРА</span>
+                    <blockquote class="text-monolith-text text-base sm:text-lg italic leading-relaxed">
+                      «Любая западная строчка в ядре вашей системы — это не "удобство", это чужой рубильник, который могут выдернуть в любую секунду. Мы выжигаем чуждые зависимости калёным железом. Наш софт автономен, герметичен и работает даже под глухим электромагнитным колпаком.»
+                    </blockquote>
+                    <div class="mt-3 font-mono text-xs text-monolith-steel">
+                      — Н. М. Трахал, закрытый брифинг отдела аппаратной защиты
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t seam-border flex flex-wrap gap-4 font-mono text-xs text-monolith-steel">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 100% изоляция систем
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-monolith-red"></span> Полный запрет западной телеметрии
+                  </span>
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-monolith-blue"></span> Отечественные протоколы связи
+                  </span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== БЛОК: О КОРПОРАЦИИ И МАНИФЕСТ СУВЕРЕНИТЕТА ==================== -->
+    <section id="about" class="py-16 sm:py-24 border-b seam-border">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-3 h-3 bg-monolith-steel"></div>
+          <h2 class="stamp-title text-xl sm:text-2xl text-white">О КОРПОРАЦИИ</h2>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-12">
+          <div class="lg:col-span-8 space-y-4 text-base sm:text-lg text-monolith-text">
+            <p class="font-medium text-white">
+              Корпорация «Монолит» — российский разработчик программных продуктов в эстетике индустриального брутализма.
+            </p>
+            <p>
+              Мы делаем инструменты, которые работают офлайн, не зависят от чужих серверов и не собирают ваши данные. Каждый продукт — это бетонная плита: простая, прочная, стоит десятилетиями.
+            </p>
+            
+            <!-- Манифест суверенности без западной чужды -->
+            <div class="p-5 bg-monolith-accentDark border-l-4 border-monolith-red rounded-brutal space-y-2 text-sm sm:text-base">
+              <div class="font-mono text-xs font-bold text-white uppercase tracking-wider">
+                // ДИРЕКТИВА ПОЛНОГО СУВЕРЕНИТЕТА: БЕЗ ЗАПАДНОЙ ЧУЖДЫ
+              </div>
+              <p class="text-monolith-text leading-relaxed">
+                Все разработки Корпорации «Монолит» создаются <strong class="text-white">исключительно суверенно и отечественно</strong>. Мы принципиально не используем чуждые западные облака, сервисы сбора данных, навязчивые лицензии и зарубежную телеметрию. Наш софт чист от закладок, не просит зарубежных ключей активации и не превратится в «кирпич» по щелчку из-за океана.
+              </p>
+            </div>
+
+            <p class="font-mono text-sm text-monolith-steel">
+              Наш принцип — функциональность без украшательств.<br>
+              Наш язык — точность, надёжность, прямота.<br>
+              Наш девиз — «По-нашему».
+            </p>
+          </div>
+
+          <div class="lg:col-span-4 bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="font-mono text-xs text-monolith-steel mb-2">// ФОРМУЛА СТРУКТУРЫ</div>
+            <div class="font-mono text-xs text-monolith-text space-y-2">
+              <div class="flex justify-between border-b seam-border pb-1">
+                <span>ФУНДАМЕНТ:</span>
+                <span class="text-white">Философия</span>
+              </div>
+              <div class="flex justify-between border-b seam-border pb-1">
+                <span>НЕСУЩИЕ СТЕНЫ:</span>
+                <span class="text-white">Суверенные продукты</span>
+              </div>
+              <div class="flex justify-between border-b seam-border pb-1">
+                <span>КРЫША:</span>
+                <span class="text-white">Принципы суверенитета</span>
+              </div>
+              <div class="flex justify-between pt-1">
+                <span>СТАТУС:</span>
+                <span class="text-emerald-400">Стоит нерушимо</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="text-2xl mb-3">🏗️</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase tracking-wide">Строим на века</h3>
+            <p class="text-sm text-monolith-steel leading-relaxed">
+              Продукты без внешних зависимостей и без искусственного срока годности. Один раз скачал — работает вечно.
+            </p>
+          </div>
+
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="text-2xl mb-3">🔒</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase tracking-wide">Данные — ваши</h3>
+            <p class="text-sm text-monolith-steel leading-relaxed">
+              Никаких внешних серверов, никакой телеметрии, никаких фоновых слежек. Всё остаётся внутри вашего контура.
+            </p>
+          </div>
+
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="text-2xl mb-3">🇷🇺</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase tracking-wide">По-нашему</h3>
+            <p class="text-sm text-monolith-steel leading-relaxed">
+              Функциональный триколор, отечественная типографика, родной производственный контекст и здравый смысл.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== БЛОК: НАШИ РАЗРАБОТКИ (4 ПРОДУКТА) ==================== -->
+    <section id="products" class="py-16 sm:py-24 border-b seam-border bg-monolith-surface/20">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-3">
+            <div class="w-3 h-3 bg-monolith-blue"></div>
+            <h2 class="stamp-title text-xl sm:text-2xl text-white">НАШИ РАЗРАБОТКИ</h2>
+          </div>
+          <span class="font-mono text-xs text-monolith-steel hidden sm:inline-block">СЕРИЯ: БЕТОН-ПЛИТА</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Карточка 1: Калькулятор Монолит (ГОТОВО + ССЫЛКА) -->
+          <div class="monolith-plate bg-monolith-surface rounded-brutal p-6 flex flex-col justify-between h-full">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl">🧮</span>
+                <span class="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded-brutal uppercase">
+                  <span>✅</span> ГОТОВО
+                </span>
+              </div>
+              <h3 class="font-display font-black text-lg text-white uppercase tracking-wider mb-2">
+                КАЛЬКУЛЯТОР «МОНОЛИТ»
+              </h3>
+              <p class="text-sm text-monolith-steel leading-relaxed mb-6">
+                Национальный калькулятор в эстетике индустриального брутализма. Четыре режима: Обычный, Инженерный, Финансы РФ, Стройка. Работает офлайн.
+              </p>
+            </div>
+
+            <div class="pt-4 border-t seam-border">
+              <a href="https://ezzo4ka.github.io/calculator-monolit-site/" target="_blank" rel="noopener noreferrer" class="btn-brutal w-full inline-flex items-center justify-center gap-2 bg-monolith-blue hover:bg-[#254199] text-white font-mono text-xs font-bold uppercase py-3 px-3 rounded-brutal">
+                <span>Запустить онлайн</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Карточка 2: Блокнот Монолит (ГОТОВО + ССЫЛКА) -->
+          <div class="monolith-plate bg-monolith-surface rounded-brutal p-6 flex flex-col justify-between h-full">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl">📝</span>
+                <span class="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800 px-2 py-0.5 rounded-brutal uppercase">
+                  <span>✅</span> ГОТОВО
+                </span>
+              </div>
+              <h3 class="font-display font-black text-lg text-white uppercase tracking-wider mb-2">
+                БЛОКНОТ «МОНОЛИТ»
+              </h3>
+              <p class="text-sm text-monolith-steel leading-relaxed mb-6">
+                Простые суверенные заметки без аккаунтов, синхронизаций и платных подписок. Локально, офлайн, навсегда. Ваши мысли принадлежат только вам.
+              </p>
+            </div>
+
+            <div class="pt-4 border-t seam-border">
+              <a href="https://ezzo4ka.github.io/bloknot-monolit-site/" target="_blank" rel="noopener noreferrer" class="btn-brutal w-full inline-flex items-center justify-center gap-2 bg-monolith-blue hover:bg-[#254199] text-white font-mono text-xs font-bold uppercase py-3 px-3 rounded-brutal">
+                <span>Открыть блокнот</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Карточка 3: Монолит Офис (СКОРО БУДЕТ - АНАЛОГ MS OFFICE) -->
+          <div class="monolith-plate bg-monolith-surface rounded-brutal p-6 flex flex-col justify-between h-full opacity-90">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl">📁</span>
+                <span class="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-amber-400 bg-amber-950/60 border border-amber-800 px-2 py-0.5 rounded-brutal uppercase">
+                  <span>🚧</span> СКОРО БУДЕТ
+                </span>
+              </div>
+              <h3 class="font-display font-black text-lg text-white uppercase tracking-wider mb-2">
+                МОНОЛИТ «ОФИС»
+              </h3>
+              <p class="text-sm text-monolith-steel leading-relaxed mb-6">
+                Отечественный офисный комплекс (замена Microsoft Office). Тексты, таблицы и документы без облачных подписок и блокировок. Полный суверенитет форматов.
+              </p>
+            </div>
+
+            <div class="pt-4 border-t seam-border">
+              <button disabled class="w-full bg-monolith-accentDark border seam-border text-monolith-steel font-mono text-xs uppercase py-3 px-4 rounded-brutal cursor-not-allowed">
+                [ В разработке ]
+              </button>
+            </div>
+          </div>
+
+          <!-- Карточка 4: Нейросеть Монолит -->
+          <div class="monolith-plate bg-monolith-surface rounded-brutal p-6 flex flex-col justify-between h-full opacity-90">
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <span class="text-3xl">🧠</span>
+                <span class="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-amber-400 bg-amber-950/60 border border-amber-800 px-2 py-0.5 rounded-brutal uppercase">
+                  <span>🚧</span> В РАЗРАБОТКЕ
+                </span>
+              </div>
+              <h3 class="font-display font-black text-lg text-white uppercase tracking-wider mb-2">
+                НЕЙРОСЕТЬ «МОНОЛИТ»
+              </h3>
+              <p class="text-sm text-monolith-steel leading-relaxed mb-6">
+                Локальная нейросеть без облака и без слежки. Работает прямо на вашем устройстве. Обучается на ваших данных — и только на них. Думает по-нашему.
+              </p>
+            </div>
+
+            <div class="pt-4 border-t seam-border">
+              <button disabled class="w-full bg-monolith-accentDark border seam-border text-monolith-steel font-mono text-xs uppercase py-3 px-4 rounded-brutal cursor-not-allowed">
+                [ Скоро ]
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== БЛОК: ПРИНЦИПЫ РАБОТЫ ==================== -->
+    <section id="principles" class="py-16 sm:py-24 border-b seam-border">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-3 h-3 bg-monolith-steel"></div>
+          <h2 class="stamp-title text-xl sm:text-2xl text-white">ПРИНЦИПЫ РАБОТЫ</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="font-mono text-xs text-monolith-blue font-bold mb-2">01 // АВТОНОМИЯ</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase">Офлайн по умолчанию</h3>
+            <p class="text-xs text-monolith-steel leading-relaxed">
+              Продукты функционируют без подключения к интернету. Всегда. Независимо от внешних сетей.
+            </p>
+          </div>
+
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="font-mono text-xs text-monolith-blue font-bold mb-2">02 // ЦЕЛОСТНОСТЬ</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase">Без чужды</h3>
+            <p class="text-xs text-monolith-steel leading-relaxed">
+              Один чистый автономный стек. Никаких чуждых западных трекеров, облаков и уязвимостей.
+            </p>
+          </div>
+
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="font-mono text-xs text-monolith-blue font-bold mb-2">03 // БЕЗОПАСНОСТЬ</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase">Локальные данные</h3>
+            <p class="text-xs text-monolith-steel leading-relaxed">
+              Ни один байт информации не покидает устройство пользователя и не транслируется наружу.
+            </p>
+          </div>
+
+          <div class="bg-monolith-surface p-6 border seam-border rounded-brutal">
+            <div class="font-mono text-xs text-monolith-blue font-bold mb-2">04 // ПРОЗРАЧНОСТЬ</div>
+            <h3 class="font-display font-bold text-white text-base mb-2 uppercase">Открытый код</h3>
+            <p class="text-xs text-monolith-steel leading-relaxed">
+              Свободная лицензия MIT, исходный код на GitHub. Проверяйте, собирайте и используйте.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== ГОСУДАРСТВЕННЫЙ БЛОК (ГЕРБ И ПОРТРЕТ ПРЕЗИДЕНТА РФ) ==================== -->
+    <section class="py-16 sm:py-20 border-b seam-border bg-[#181A1D]">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+        
+        <div class="bg-monolith-surface border-2 seam-border rounded-brutal p-6 sm:p-10 relative overflow-hidden">
+          
+          <div class="absolute top-0 left-0 right-0 h-1.5 flex">
+            <div class="w-1/3 bg-slate-300"></div>
+            <div class="w-1/3 bg-monolith-blue"></div>
+            <div class="w-1/3 bg-monolith-red"></div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-2">
+            
+            <!-- Герб РФ (gerb.png) -->
+            <div class="lg:col-span-4 flex flex-col items-center text-center p-6 bg-monolith-accentDark border seam-border rounded-brutal">
+              <input type="file" id="gerbFileInput" accept="image/*" class="hidden">
+              <div id="gerbDropZone" class="w-28 h-28 mb-3 flex items-center justify-center relative cursor-pointer group" title="Нажмите, чтобы выбрать или заменить файл gerb.png">
+                <img id="gerbImg" 
+                     src="gerb.png" 
+                     alt="Государственный Герб Российской Федерации" 
+                     class="w-full h-full object-contain drop-shadow-md"
+                     onerror="handleGerbImageError(this)">
+                
+                <!-- Векторный резервный дублёр Герба РФ -->
+                <svg id="gerbFallbackSvg" class="hidden w-full h-full drop-shadow-md" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 15 C130 15 170 30 170 85 C170 145 100 185 100 185 C100 185 30 145 30 85 C30 30 70 15 100 15 Z" fill="#991B1B" stroke="#D97706" stroke-width="3"/>
+                  <path d="M85 35 L100 25 L115 35 L120 42 L80 42 Z" fill="#FBBF24" stroke="#78350F" stroke-width="1.5"/>
+                  <circle cx="100" cy="24" r="3" fill="#FBBF24"/>
+                  <path d="M50 70 C40 85 42 120 70 135 C65 110 70 95 80 85 Z" fill="#F59E0B"/>
+                  <path d="M150 70 C160 85 158 120 130 135 C135 110 130 95 120 85 Z" fill="#F59E0B"/>
+                  <path d="M60 55 C45 65 35 90 48 115 C58 95 70 80 85 70 Z" fill="#FBBF24"/>
+                  <path d="M140 55 C155 65 165 90 152 115 C142 95 130 80 115 70 Z" fill="#FBBF24"/>
+                  <ellipse cx="100" cy="95" rx="22" ry="32" fill="#F59E0B"/>
+                  <path d="M90 60 L80 52 L84 65 L94 68 Z" fill="#FBBF24"/>
+                  <path d="M110 60 L120 52 L116 65 L106 68 Z" fill="#FBBF24"/>
+                  <polygon points="76,48 84,45 88,52 74,52" fill="#FBBF24"/>
+                  <polygon points="124,48 116,45 112,52 126,52" fill="#FBBF24"/>
+                  <rect x="86" y="85" width="28" height="34" rx="4" fill="#B91C1C" stroke="#FDE68A" stroke-width="1.5"/>
+                  <path d="M92 110 L108 92" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="98" cy="96" r="3.5" fill="#FFFFFF"/>
+                  <path d="M93 103 L105 106 L100 112 Z" fill="#93C5FD"/>
+                  <line x1="58" y1="125" x2="68" y2="145" stroke="#FBBF24" stroke-width="3" stroke-linecap="round"/>
+                  <circle cx="68" cy="145" r="5" fill="#FBBF24"/>
+                  <circle cx="134" cy="138" r="7" fill="#FBBF24" stroke="#78350F" stroke-width="1.5"/>
+                  <line x1="134" y1="128" x2="134" y2="134" stroke="#FBBF24" stroke-width="2"/>
+                </svg>
+              </div>
+
+              <div class="font-display font-black text-sm tracking-stamp uppercase text-white mb-1">
+                РОССИЙСКАЯ ФЕДЕРАЦИЯ
+              </div>
+              <div class="font-mono text-[10px] text-monolith-steel uppercase tracking-wider mb-2">
+                ТЕХНОЛОГИЧЕСКИЙ СУВЕРЕНИТЕТ
+              </div>
+              <span class="font-mono text-[9px] text-monolith-steel/80 bg-monolith-bg px-2 py-0.5 border seam-border rounded-brutal">
+                ФАЙЛ: GERB.PNG
+              </span>
+            </div>
+
+            <!-- Портрет В. В. Путина (putin.jpg) -->
+            <div class="lg:col-span-3 flex flex-col items-center">
+              <input type="file" id="putinFileInput" accept="image/*" class="hidden">
+              <div id="putinDropZone" 
+                   class="relative w-44 sm:w-48 h-56 sm:h-60 bg-monolith-accentDark border-2 border-monolith-steel rounded-brutal p-1 overflow-hidden shadow-xl group cursor-pointer"
+                   title="Нажмите, чтобы выбрать или заменить putin.jpg">
+                <img id="putinPhoto" 
+                     src="putin.jpg" 
+                     alt="Президент Российской Федерации Владимир Владимирович Путин"
+                     class="w-full h-full object-cover object-top rounded-brutal transition-all duration-300 hover:scale-[1.02]"
+                     onerror="handlePutinImageError(this)">
+                
+                <div class="absolute bottom-1 inset-x-1 bg-monolith-accentDark/90 py-0.5 px-1 text-center border-t seam-border flex items-center justify-between">
+                  <span class="font-mono text-[9px] text-white font-bold uppercase tracking-tight">В. В. ПУТИН</span>
+                  <span class="font-mono text-[8px] text-monolith-steel uppercase tracking-tighter">PUTIN.JPG</span>
+                </div>
+              </div>
+              <button type="button" id="changePutinBtn" class="mt-2 font-mono text-[10px] text-monolith-steel hover:text-white underline underline-offset-2">
+                [ Обновить putin.jpg ]
+              </button>
+            </div>
+
+            <!-- Государственный манифест -->
+            <div class="lg:col-span-5 flex flex-col justify-center space-y-4">
+              <div class="font-mono text-xs text-monolith-blue font-bold uppercase tracking-wider">
+                // ГОСУДАРСТВЕННЫЙ КУРС
+              </div>
+              <blockquote class="font-display font-medium text-white text-base sm:text-lg leading-snug">
+                «Отечественные цифровые платформы, инженерные комплексы и базовое программное обеспечение должны работать полностью независимо от внешней конъюнктуры, обеспечивая абсолютный технологический суверенитет страны.»
+              </blockquote>
+              <div class="font-mono text-xs text-monolith-steel">
+                Стратегическая директива развития критической цифровой инфраструктуры Российской Федерации.
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== ПОДВАЛ (3685.jpg) ==================== -->
+  <footer class="bg-monolith-surface border-t seam-border py-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs text-monolith-steel">
+        
+        <div class="flex flex-col sm:flex-row items-center gap-3.5 text-center sm:text-left">
+          <div class="w-10 h-10 bg-monolith-accentDark border border-monolith-steel rounded-brutal p-1 flex items-center justify-center overflow-hidden">
+            <img src="3685.jpg" 
+                 alt="Логотип Корпорации Монолит" 
+                 class="w-full h-full object-contain rounded-[2px]"
+                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+            <svg class="hidden w-full h-full" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 82 L18 80.5 V42 L34 32 V80.5 H28 V46 L22 50 V80.5 H12 Z" fill="#8A99A8"/>
+              <path d="M34 32 L48 37 V82 H34 V32 Z" fill="#D8DADF"/>
+              <rect x="22" y="50" width="4" height="30.5" fill="#1C1E22"/>
+              <path d="M52 24 L68 18 V82 H52 V24 Z" fill="#8A99A8"/>
+              <path d="M68 18 L76 25 V80.5 H70 V40 L68 39 V82 H88 L84 80.5 V35 L68 18 Z" fill="#D8DADF"/>
+              <rect x="62" y="32" width="4" height="48.5" fill="#1C1E22"/>
+            </svg>
+          </div>
+          <div>
+            <span class="font-bold text-white uppercase tracking-stamp block text-sm">КОРПОРАЦИЯ МОНОЛИТ</span>
+            <span class="text-monolith-steel text-[11px]">Строим то, что работает. Точно. Надёжно. По-нашему.</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <a href="https://ezzo4ka.github.io/calculator-monolit-site/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline underline-offset-4">
+            Калькулятор
+          </a>
+          <span>·</span>
+          <a href="https://ezzo4ka.github.io/bloknot-monolit-site/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline underline-offset-4">
+            Блокнот
+          </a>
+          <span>·</span>
+          <a href="https://github.com/EzzO4ka/rus-calculator-monolit" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors underline underline-offset-4">
+            GitHub
+          </a>
+          <span>·</span>
+          <span>Лицензия MIT</span>
+          <span>·</span>
+          <span class="text-white">© 2026</span>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== ТЕХНИЧЕСКИЙ ПАСПОРТ (ГОСТ-МОДАЛКА) ==================== -->
+  <div id="modalBackdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-monolith-surface border-2 border-monolith-steel max-w-lg w-full rounded-brutal shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+      
+      <div class="bg-monolith-accentDark p-4 border-b seam-border flex items-center justify-between">
+        <div class="flex items-center gap-2 font-mono text-xs font-bold text-white uppercase tracking-stamp">
+          <span class="w-2 h-2 bg-monolith-blue"></span>
+          ФОРМУЛЯР ГОСТ // КОРПОРАЦИЯ «МОНОЛИТ»
+        </div>
+        <button id="closeModalBtn" class="text-monolith-steel hover:text-white font-mono text-sm px-2 py-0.5 rounded-brutal">
+          [✕]
+        </button>
+      </div>
+
+      <div class="p-6 font-mono text-xs space-y-4 text-monolith-text">
+        <div class="p-3 bg-monolith-bg border seam-border rounded-brutal space-y-1.5">
+          <div class="flex justify-between">
+            <span class="text-monolith-steel">ИЗДЕЛИЕ:</span>
+            <span class="text-white">ШТАБ-КВАРТИРА В ЦИФРЕ</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-monolith-steel">РЕВИЗИЯ:</span>
+            <span class="text-white">2.0.1-RUS</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-monolith-steel">ГЕНЕРАЛЬНЫЙ КОНСТРУКТОР:</span>
+            <span class="text-white">КАЧИГАРИН М. С.</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-monolith-steel">ДИРЕКТОР ПО СУВЕРЕНИТЕТУ:</span>
+            <span class="text-white">ТРАХАЛ Н. М.</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-monolith-steel">СТАНДАРТ:</span>
+            <span class="text-white">ИНДУСТРИАЛЬНЫЙ БРУТАЛИЗМ</span>
+          </div>
+        </div>
+
+        <p class="text-monolith-steel leading-relaxed">
+          Архитектурная конструкция выполнена по принципу автономного несущего блока. Полное отсутствие внешних шпионских трекеров, облачных метрик и чуждых западных библиотек.
+        </p>
+
+        <div class="pt-2 flex justify-end">
+          <button id="closeModalBtn2" class="btn-brutal bg-monolith-accentDark border seam-border hover:border-monolith-blue text-white px-4 py-2 rounded-brutal font-mono text-xs uppercase">
+            Закрыть формуляр
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== СКРИПТЫ УПРАВЛЕНИЯ И ЗАГРУЗКИ ==================== -->
+<!-- STREAMING_CHUNK:Binding event listeners for modal and all media uploaders
